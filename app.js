@@ -11,34 +11,81 @@ app.use(express.static("public"));
 
 const request = require("request");
 const mysql = require("mysql");
+const tools = require("./tools.js");
 
 //routes
 
 
 //root route
-app.get("/", function(req, res){
-    var requestURL = "https://api.unsplash.com/photos/random?client_id=f06eb25d66d0d08314c6c0b6b3300487436f8bf1c5affc079c1247c9198f3adb&orientation=landscape";
-    request(requestURL, function (error, response, body) {
-      //console.log('error:', error); // Print the error if one occurred
-      //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-      //console.log('body:', body); // Print the API data.
-      if (!error) {
-          var parsedData = JSON.parse(body);
-          //console.log("image url:", parsedData["urls"]["regular"]);
-          var imageURL = parsedData["urls"]["regular"];
-          res.render("index", {"imageURL":imageURL});
-      }
-      else {
-          res.render("index", {"error":"Unable to access API!"});
-      }
-      
-    });//request
+app.get("/", async function(req, res){
+    var imageURLs = await tools.getRandomImages("", 1);
+    //console.log("imageURLs using Promises: " + imageURLs);
+    res.render("index", {"imageURL":imageURLs});
     
 });//root route
 
-app.get("/search", function(req, res){
-    req.send("hi!");
-});
+app.get("/search", async function(req, res){
+    //console.dir(req);
+    //console.log(req.query.keyword);
+    var keyword = req.query.keyword;
+    
+    var imageURLs = await tools.getRandomImages(keyword, 9);
+    console.log("imageURLs using Promises: " + imageURLs);
+    res.render("results", {"imageURLs":imageURLs, "keyword": keyword});
+    /**getRandomImages_cb(keyword, 9, function(imageURLs){
+        console.log("imageURLs: " + imageURLs);
+        res.render("results", {"imageURLs":imageURLs});
+    });**/
+    
+    
+});//search
+
+app.get("/api/updateFavorites", function(req, res) {
+    var conn = tools.createConnection();
+    var sql;
+    var sqlParams;
+    if (req.query.action == "add") {
+    sql = "INSERT INTO favorites (imageURL, keyword) VALUES (?, ?)";
+    sqlParams = [req.query.imageURL, req.query.keyword];
+    }
+    else {
+    sql = "DELETE FROM favorites WHERE imageURL = ?";
+    sqlParams = [req.query.imageURL];
+    }
+    conn.connect( function(err){
+        if (err) throw err;
+        conn.query(sql, sqlParams, function(err, result){
+            if (err) throw err;
+        });//query
+    });//connect
+    res.send("it works!");
+});//updateFavorites
+
+app.get("/displayKeywords", function(req, res){
+    var conn = tools.createConnection();
+    var sql = "SELECT DISTINCT keyword FROM `favorites` ORDER BY keyword";
+    conn.connect( function(err){
+        if (err) throw err;   
+        conn.query(sql, function(err, result) {
+            if (err) throw err;
+            res.render("favorites", {"rows": result});
+            console.log(result);
+        });//query
+    });//connect
+});//displayKeywords
+
+app.get("/api/displayFavorites", function(req, res) {
+    var conn = tools.createConnection();
+    var sql = "SELECT imageURL FROM favorites WHERE keyword = ?";
+    var sqlParams = [req.query.keword];
+    conn.connect( function(err){
+        if (err) throw err;   
+        conn.query(sql, sqlParams, function(err, results) {
+            if (err) throw err;
+            res.send(results);
+        });//query
+    });//connect
+});//displayFavorites
 
 //server listener
 app.listen(process.env.PORT, process.env.IP, function() {

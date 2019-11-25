@@ -1,7 +1,11 @@
-<% include partials/header.ejs %>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title> Image Search App </title>
         <style>
             body {
-                background-image: url('<%= imageURL %>')
+                background-image: url("<%= imageURL[0] %>")
             }
         </style>
     </head>
@@ -16,4 +20,5 @@
                 </button>
             </form>
         </main>
-<% include partials/footer.ejs %>
+</body>
+</html>
