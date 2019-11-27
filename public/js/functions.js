@@ -28,7 +28,7 @@ $(document).ready(function(){
                         "' width='200' height='200'>");
                         $("#favorites").append("<img class='favoriteIcon' src='img/favorite_on.png'" +
                         "width='20'>");
-                        if (i % 4 == 0 && i > 1) {
+                        if (i % 4 == 3) {
                             $("#favorites").append("<br>");
                         }
                     });
