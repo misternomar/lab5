@@ -51,7 +51,7 @@ getRandomImages: function (keyword, imageCount) {
               resolve(imageURLs);
           }
           else {
-              console.log("error", error)
+              console.log("error", error);
           }
         });//request
     });//promise
@@ -70,4 +70,4 @@ createConnection: function(){
     });
     return conn;
 }
-}
+};

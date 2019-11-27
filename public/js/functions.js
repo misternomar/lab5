@@ -1,8 +1,7 @@
 $(document).ready(function(){
     
-    $(".favoriteIcon").on("click", function(){
-      //alert($(this).prev().attr("src"));
-      var imageURL = $(this).prev().attr("src");
+    $(document).on("click", ".favoriteIcon", function() {
+        var imageURL = $(this).prev().attr("src");
       if ($(this).attr("src") == "img/favorite.png") {
         $(this).attr("src", "img/favorite_on.png");
         updateFavorite("add", imageURL);//inserts a new record
@@ -11,10 +10,10 @@ $(document).ready(function(){
         $(this).attr("src", "img/favorite.png");
         updateFavorite("delete", imageURL);//delete a record
       }
-  });
+    });
     
-    $(".keywordLink").on("click", function(){
-        //alert($(this).text().trim());
+    $(".keywordLink").on("click", function() {
+        
         $.ajax({
             method: "get",
             url: "/api/displayFavorites",
@@ -22,14 +21,21 @@ $(document).ready(function(){
                     "keyword": $(this).text().trim(),
                 },
             success: function(rows, status) {
-                $("#favorites").html("");
-                rows.forEach(function(row){
-                    $("#favorites").append("<img src='"+ row.imageURL +"' width='200' height='200'>");
-                });
+                    $("#favorites").html("");
+                    rows.forEach(function(row, i){
+                        $("#favorites").append(
+                        "<img class='image' src='" + row.imageURL + 
+                        "' width='200' height='200'>");
+                        $("#favorites").append("<img class='favoriteIcon' src='img/favorite_on.png'" +
+                        "width='20'>");
+                        if (i % 4 == 3) {
+                            $("#favorites").append("<br>");
+                        }
+                    });
             }
         });//ajax
     });
-    
+
     function updateFavorite(action, imageURL) {
         $.ajax({
             method: "get",
@@ -40,6 +46,4 @@ $(document).ready(function(){
             }
         });//ajax
     }
-    
-    
-})
+});

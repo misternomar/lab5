@@ -1,28 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="js/functions.js"></script>
-        <meta charset="UTF-8" />
-        <title> Image Search App </title>
-    </head>
+<%- include('partials/header_results.ejs') %>
     <body>
-        <main>
         <form action="/search">
         <input type="text" id="keyword" value="<%= keyword %>" placeholder="Type keyword" name="keyword"/>
-        <br><br>
         <button>
             Search
         </button>
-        <a href="/displayKeywords"> See Favorites </a>
+        <a id="favLink" href="/displayKeywords"> See Favorites </a>
         </form>
 <% imageURLs.forEach(function(imageURL, i){ %>
 
     <%- (i%3==0)?"<br>":"" %>
-    <img src='<%= imageURL %>' width="200" height="200">
+    <div class="imageContainer">
+    <img class="image" src='<%= imageURL %>' width="200" height="200">
     <img class='favoriteIcon' src='img/favorite.png' width="20">
+    </div>
 <% }) %>
-        </main>
-    </body>
-</html>
+<%- include('partials/footer.ejs') %>
         

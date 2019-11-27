@@ -20,7 +20,7 @@ const tools = require("./tools.js");
 app.get("/", async function(req, res){
     var imageURLs = await tools.getRandomImages("", 1);
     //console.log("imageURLs using Promises: " + imageURLs);
-    res.render("index", {"imageURL":imageURLs});
+    res.render("index", {"imageURLs":imageURLs});
     
 });//root route
 
@@ -61,15 +61,15 @@ app.get("/api/updateFavorites", function(req, res) {
     res.send("it works!");
 });//updateFavorites
 
-app.get("/displayKeywords", function(req, res){
+app.get("/displayKeywords", async function(req, res){
+    var imageURLs = await tools.getRandomImages("", 1);
     var conn = tools.createConnection();
-    var sql = "SELECT DISTINCT keyword FROM `favorites` ORDER BY keyword";
+    var sql = "SELECT DISTINCT keyword FROM favorites ORDER BY keyword";
     conn.connect( function(err){
         if (err) throw err;   
         conn.query(sql, function(err, result) {
             if (err) throw err;
-            res.render("favorites", {"rows": result});
-            console.log(result);
+            res.render("favorites", {"rows": result, "imageURLs": imageURLs});
         });//query
     });//connect
 });//displayKeywords
@@ -77,7 +77,7 @@ app.get("/displayKeywords", function(req, res){
 app.get("/api/displayFavorites", function(req, res) {
     var conn = tools.createConnection();
     var sql = "SELECT imageURL FROM favorites WHERE keyword = ?";
-    var sqlParams = [req.query.keword];
+    var sqlParams = [req.query.keyword];
     conn.connect( function(err){
         if (err) throw err;   
         conn.query(sql, sqlParams, function(err, results) {

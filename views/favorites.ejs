@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="js/functions.js"></script>
-        <meta charset="UTF-8" />
-        <title> Image Search App </title>
-    </head>
+<%- include('partials/header_favorites.ejs') %>
     <body>
         
-    <a href="/"> Back to Search </a>
-    <h1>Favorite Pics
+    <a id="searchLink" href="/"> Back to Search </a>
+    <h1 id="favHeader">Favorite Pics
     </h1>
     
     <% rows.forEach( function(row) { %>
@@ -20,8 +13,7 @@
         
         <hr>
         
-        <div id="favorites">
+        <div class="imageContainer" id="favorites">
         </div>
-    </body>
-</html>
+<%- include('partials/footer.ejs') %>
        
